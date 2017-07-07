@@ -1,0 +1,32 @@
+---
+applications:
+  - name: ci
+    memory: 256M
+    buildpack: https://github.com/dgodd/crystal-buildpack.git
+    env:
+      HOSTS: greenhouse.ci.cf-app.com main.bosh-ci.cf-app.com
+      CS_GROUPS: |
+        {
+          "greenhouse": {
+            "greenhouse.ci.cf-app.com": {
+              "garden-windows": [
+                "main"
+              ],
+              "environments": [
+                "all"
+              ],
+              "tar": [],
+              "pivnet": [],
+              "hwc-exe": [],
+              "winc": []
+            },
+            "main.bosh-ci.cf-app.com": {
+              "windows-stemcells": [
+                "main","vsphere","aws","gcp","azure"
+              ],
+              "bosh-agent": [],
+              "bosh-utils": []
+            }
+          }
+        }
+      SKIP_SSL_VALIDATION: "true"

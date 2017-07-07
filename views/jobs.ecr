@@ -1,0 +1,17 @@
+<% Kilt.embed "views/header.ecr" %>
+
+<div class="scalable">
+<% jobs.each do |info| %>
+  <a href="https://<%= host %><%= info.url %>/jobs/<%= info.name %>/builds/<%= info.latest_build_num %>" target="_blank" class="outer<%= info.running ? " running" : "" %>">
+  <div class="status">
+    <div class="<%= info.status %>" style="width: 100%;"></div>
+  </div>
+  <% if info.paused %><div class="paused"></div><% end %>
+  <div class="inner">
+    <span><span><%= info.pipeline %></span></span>
+    <span><span><%= info.name %></span></span>
+    <span><span>(<%= info.start_time_ago_days %>d) <%= info.run_time %></span></span>
+  </div>
+</a>
+<% end %>
+</div>

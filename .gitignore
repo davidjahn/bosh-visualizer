@@ -1,0 +1,6 @@
+*.swp
+/download
+/.shards/
+/libs/
+/lib/
+/.crystal/
