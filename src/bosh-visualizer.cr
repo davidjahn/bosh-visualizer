@@ -7,7 +7,7 @@ require "./concourse-summary/*"
 serve_static({"gzip" => true, "dir_listing" => false})
 gzip true
 
-REFRESH_INTERVAL = (ENV["REFRESH_INTERVAL"]? || 3).to_i
+REFRESH_INTERVAL = (ENV["REFRESH_INTERVAL"]? || 10).to_i
 # GROUPS = parse_groups(ENV["CS_GROUPS"]? || "{}")
 
 # def setup(env)
@@ -35,6 +35,35 @@ REFRESH_INTERVAL = (ENV["REFRESH_INTERVAL"]? || 3).to_i
 
 #   {refresh_interval,username,password,ignore_groups,collapso_toggle,login_form,team_name}
 # end
+
+def run_command(command, args)
+  io = IO::Memory.new
+  Process.run(command, args, output: io)
+  io.to_s
+end
+
+class BoshVM
+  def initialize(name : String, status : String)
+    @name = name
+    @status = status
+  end
+  def name
+    @name
+  end
+  def status
+    @status
+  end
+end
+
+def get_vms
+  command = "bosh"
+  args = ["-d", "#{ENV["DEPLOYMENT_NAME"]}", "vms", "--json"]
+  result = JSON.parse(run_command(command,args))
+
+  vms = [] of BoshVM
+  result["Tables"].first["Rows"].each { |vm| vms << BoshVM.new(vm["instance"].to_s,vm["process_state"].to_s)}
+  return vms
+end
 
 def process(data, ignore_groups)
   if ignore_groups
@@ -103,16 +132,11 @@ end
 get "/" do |env|
   refresh_interval = REFRESH_INTERVAL
   # hosts = (ENV["HOSTS"]? || "").split(/\s+/)
-  io = IO::Memory.new
-  args = [] of String
-  Process.run("date", args, output: io)
-  command_output = io.to_s
-  puts "command_output: #{command_output}"
   # groups = GROUPS.keys
-  groups = [ command_output ]
 
-  json_or_html(command_output, "index")
-  # render "views/index.ecr", "views/layout.ecr"
+  command_output = get_vms
+  # json_or_html(command_output, "index")
+  render "views/index.ecr", "views/layout.ecr"
 end
 
 Kemal.config.add_handler ExposeUnauthorizedHandler.new

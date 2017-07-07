@@ -15,6 +15,9 @@
 <%#     </a></div> %>
 <%#   <% end %1> %>
 <%# <% end %1> %>
-<p>here is some command output: <%= command_output %></p>
+<p>here are some VMs:</p>
+<% command_output.each do |vm| %>
+  <p>name: <%= vm.name %>, status: <%= vm.status %></p>
+<% end %>
 <p>This project was not derived from any other project by Dave Goddard ;)</p>
 
