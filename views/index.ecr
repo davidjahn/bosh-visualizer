@@ -1,23 +1,25 @@
 <h1>Bosh Visualizer</h1>
-<%# <p>Use the URL path to show a summary, eg, `/host/[HOST NAME]`</p> %>
 
-<%# <% hosts.each do |host| %1> %>
-<%# <div><a href="/host/<%= host %1>"> %>
-<%#   <%= host %1> %>
-<%# </a></div> %>
+<%# <% deps.each do |dep| %1> %>
+  <% dep = command_output %>
+  <table style="width:100%">
+  <% i = 0; while true %>
+  <% lastIndex = [dep.size-1, i+3].min; sel = dep[i..lastIndex] %>
+  <tr>
+  <% sel.each do |vm| %>
+    <td>
+    <% if vm.status == "running" %>
+      <div class="succeeded"><%= vm.name %></div>
+    <% else %>
+      <div class="failed"><%= vm.name %></div>
+    <% end %>
+    </td>
+  <% end %>
+  </tr>
+  <% i += 4; break if i >= dep.size %>
+  <% end %>
+</table>
 <%# <% end %1> %>
 
-<%# <% if groups && groups.size > 0 %1> %>
-<%#   <div style="margin-top:2em">Groups</div> %>
-<%#   <% groups.each do |group| %1> %>
-<%#     <div><a href="/group/<%= group %1>"> %>
-<%#       <%= group %1> %>
-<%#     </a></div> %>
-<%#   <% end %1> %>
-<%# <% end %1> %>
-<p>here are some VMs:</p>
-<% command_output.each do |vm| %>
-  <p>name: <%= vm.name %>, status: <%= vm.status %></p>
-<% end %>
 <p>This project was not derived from any other project by Dave Goddard ;)</p>
 

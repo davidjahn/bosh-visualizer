@@ -61,7 +61,7 @@ def get_vms
   result = JSON.parse(run_command(command,args))
 
   vms = [] of BoshVM
-  result["Tables"].first["Rows"].each { |vm| vms << BoshVM.new(vm["instance"].to_s,vm["process_state"].to_s)}
+  result["Tables"].first["Rows"].each { |row| vms << BoshVM.new(row[0].to_s, row[1].to_s) }
   return vms
 end
 
